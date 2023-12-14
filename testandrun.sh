@@ -3,7 +3,7 @@
 echo -n "Choose day: "
 read day
 
-make day
+make build day=$day
 
 ./run "Day $day/tests.txt" > test_result.txt
 
