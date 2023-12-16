@@ -5,9 +5,15 @@ read day
 
 make build day=$day
 
-./run "Day $day/tests.txt" > test_result.txt
+echo "Running test"
+./run "Day $day/test.txt" > test_result.txt
 
-if ! [ diff output test_result.txt ]; then
+echo "Testing difference"
+DIFF=$(diff "Day $day/test_answer.txt" test_result.txt)
+echo $DIFF
+
+if ! [ "$DIFF" != "" ]; then
+  echo "Running input"
   ./run "Day $day/input.txt" > result.txt
-
+fi
 
