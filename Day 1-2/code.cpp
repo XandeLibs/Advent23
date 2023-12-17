@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
   char combined_num[2];
   size_t line_max_size = 64;
 
-  line = new char[64]();
+  line = new char[64];
   //read input
   input = fopen(argv[1], "r");
 
