@@ -4,17 +4,27 @@
 #include <fstream>
 #include <string>
 
-using string = std::string;
-
 #define noop (int)0
 
 const bool _DEBUG = false;
 
 namespace std {
 
+inline int get_number(string const& top, int pos){
+  while (isdigit(top[pos])) {
+    pos--;
+
+    if(pos < 0) break;
+  }
+  pos++;
+
+  return atoi(&top[pos]);
+}
+
 inline int read_line(string const* top, string const* current, string const* bottom){
   int sum = 0;
   int pos = 0;
+  //up = if the line above exists, left = if the column to the left exists etc
   bool up = (top != NULL)? true: false;
   bool down = (bottom != NULL)? true: false;
   bool left, right;
@@ -24,7 +34,29 @@ inline int read_line(string const* top, string const* current, string const* bot
       left = pos>0? true: false;
       right = pos<139? true: false;
 
-      
+      //if the up char is a digit, atoi would get any digits on the left and the right
+      if(up){
+        if(isdigit((*top)[pos])){
+          sum += get_number(*top, pos);
+        }
+        else {
+          if(left) sum += get_number(*top, pos-1);
+          if(right)sum += get_number(*top, pos+1);
+        }
+      }
+
+      if(down){
+        if(isdigit((*bottom)[pos])){
+          sum += get_number(*bottom, pos);
+        }
+        else{
+          if(left) sum += get_number(*bottom, pos-1);
+          if(right)sum += get_number(*bottom, pos+1);
+        }
+      }
+
+      if(left) sum += get_number(*current, pos-1);
+      if(right)sum += get_number(*current, pos+1);
     }
     pos++;
   }
@@ -35,24 +67,22 @@ inline int read_line(string const* top, string const* current, string const* bot
 int main (int argc, char *argv[]) {
   ifstream input(argv[1]);
   int sum = 0;
-  string line1;
-  string line2;
-  string line3;
-  int line_size;
-  size_t line_max_size = 141;
+  string top;
+  string current;
+  string bottom;
 
-  getline(input, line1);
-  getline(input, line2);
-  sum += read_line(NULL, &line1, &line2);
+  getline(input, top);
+  getline(input, current);
+  sum += read_line(NULL, &top, &current);
 
   while (!input.eof()){
-    getline(input, line3);
-    sum += read_line(&line1, &line2, &line3);
-    line1 = line2;
-    line2 = line3;
+    getline(input, bottom);
+    sum += read_line(&top, &current, &bottom);
+    top = current;
+    current = bottom;
   }
 
-  sum += read_line(&line1, &line2, NULL);
+  sum += read_line(&top, &current, NULL);
 
   printf("%d\n", sum);
 
