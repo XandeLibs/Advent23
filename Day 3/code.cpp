@@ -6,22 +6,31 @@
 
 #define noop (int)0
 
-const bool _DEBUG = false;
+const bool _DEBUG = 0;
+int line = 1;
 
-namespace std {
+using string = std::string;
 
 inline int get_number(string const& top, int pos){
-  while (isdigit(top[pos])) {
-    pos--;
+  if(_DEBUG) printf("Reading pos %d: ", pos);
 
-    if(pos < 0) break;
-  }
+  if(isdigit(top[pos])){
+    do{
+      pos--;
+
+      if(pos < 0) break;
+    }while (isdigit(top[pos])); 
+
   pos++;
+  }
+
+  if(_DEBUG) printf("found %d\n", atoi(&top[pos]));
 
   return atoi(&top[pos]);
 }
 
 inline int read_line(string const* top, string const* current, string const* bottom){
+  if(_DEBUG) printf("------Line %d------\n", line++);
   int sum = 0;
   int pos = 0;
   //up = if the line above exists, left = if the column to the left exists etc
@@ -30,7 +39,7 @@ inline int read_line(string const* top, string const* current, string const* bot
   bool left, right;
 
   for (auto& c : *current){
-    if (ispunct(c)){
+    if (ispunct(c) && c != '.'){
       left = pos>0? true: false;
       right = pos<139? true: false;
 
@@ -65,7 +74,7 @@ inline int read_line(string const* top, string const* current, string const* bot
 }
 
 int main (int argc, char *argv[]) {
-  ifstream input(argv[1]);
+  std::ifstream input(argv[1]);
   int sum = 0;
   string top;
   string current;
@@ -89,4 +98,3 @@ int main (int argc, char *argv[]) {
   return 0;
 }
 
-}
