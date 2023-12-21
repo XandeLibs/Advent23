@@ -96,6 +96,7 @@ inline int read_line(string const* top, string const* current, string const* bot
 
 int main (int argc, char *argv[]) {
   std::ifstream input(argv[1]);
+  std::ofstream output(argv[2]);
   int sum = 0;
   string top;
   string current;
@@ -115,7 +116,7 @@ int main (int argc, char *argv[]) {
 
   sum += read_line(&top, &current, NULL);
 
-  printf("%d\n", sum);
+  output << sum;
 
   return 0;
 }

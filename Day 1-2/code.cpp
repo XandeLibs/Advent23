@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cctype>
 #include <cstdlib>
+#include <fstream>
 
 // one two three four five six seven eight nine zero
 // one
@@ -182,6 +183,7 @@ inline char check_number(char* __restrict line, int line_size, bool backwards) {
 
 int main(int argc, char *argv[])
 {
+  std::ofstream output(argv[2]);
   char* line;
   FILE* input;
   int line_size = 0;
@@ -207,7 +209,7 @@ int main(int argc, char *argv[])
     //printf("Combined: %d\n", atoi(combined_num));
   }
 
-  printf("%i\n", sum);
+  output << sum;
 
   delete line;
 

@@ -1,12 +1,14 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 
 #define noop (int)0
 
 const bool _DEBUG = false;
 
 int main (int argc, char *argv[]) {
+  std::ofstream output(argv[2]);
   FILE* input;
   int id;
   int sum = 0;
@@ -61,7 +63,7 @@ int main (int argc, char *argv[]) {
     NEXTGAME: continue;
   }
 
-  printf("%d\n", sum);
+  output << sum;
 
   return 0;
 }

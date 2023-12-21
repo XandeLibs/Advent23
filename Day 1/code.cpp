@@ -1,9 +1,11 @@
 #include <cstdio>
 #include <cctype>
 #include <cstdlib>
+#include <fstream>
 
 int main(int argc, char *argv[])
 {
+  std::ofstream output(argv[2]);
   char* line;
   FILE* input;
   int i_first = 0;
@@ -33,7 +35,7 @@ int main(int argc, char *argv[])
     sum += atoi(combined_num);
   }
 
-  printf("%i\n", sum);
+  output << sum;
 
   delete line;
 
