@@ -5,16 +5,19 @@ read day
 
 make build day=$day
 
-echo "Running test"
-./run "Day $day/test.txt" "test_result.txt"
+if [ $? == 0 ]; then
 
-echo "Testing difference"
-DIFF=$(diff --strip-trailing-cr "Day $day/test_answer.txt" "test_result.txt")
-echo $DIFF
+  echo "Running test"
+  ./run "Day $day/test.txt" "test_result.txt"
 
-if ! [ "$DIFF" != "" ]; then
-  echo "Running input"
-  ./run "Day $day/input.txt" "result.txt"
-  cat "result.txt"
+  echo "Testing difference"
+  DIFF=$(diff --strip-trailing-cr "Day $day/test_answer.txt" "test_result.txt")
+  echo $DIFF
+
+  if ! [ "$DIFF" != "" ]; then
+    echo "Running input"
+    ./run "Day $day/input.txt" "result.txt"
+    cat "result.txt"
+  fi
+
 fi
-
