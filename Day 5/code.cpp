@@ -128,26 +128,26 @@ vector convert(const vector &source, const vector &source_range, const vector &d
 
   for(auto s: source){
     // First value larger than s, if none, returns last
-    auto lb = std::upper_bound(source_range.begin(), source_range.end(), s);
+    auto ub = std::upper_bound(source_range.begin(), source_range.end(), s);
 
-    if(lb == source_range.begin()){ // not in map
+    if(ub == source_range.begin()){ // not in map
       if(_DEBUG) std::cout << s << " not in map\n";
       destination.push_back(s);
       continue;
     }
 
-    lb = std::prev(lb);
-    pos = std::distance(source_range.begin(), lb);
+    ub = std::prev(ub);
+    pos = std::distance(source_range.begin(), ub);
 
-    if(s < *lb + range[pos]){ // Inside the source range
-      if(_DEBUG) std::cout << s << " is between " << *lb << " and " << *lb + range[pos] << '\n';
+    if(s < *ub + range[pos]){ // Inside the source range
+      if(_DEBUG) std::cout << s << " is between " << *ub << " and " << *ub + range[pos] << '\n';
 
-      offset = s - *lb;
+      offset = s - *ub;
       destination.push_back(dest_range[pos] + offset);
     }
     else{
 
-      if(_DEBUG) std::cout << s << " is not in the map, lb: " << *lb << " range: " << range[pos] << " max: " << *lb + range[pos] << "\n";
+      if(_DEBUG) std::cout << s << " is not in the map, ub: " << *ub << " range: " << range[pos] << " max: " << *ub + range[pos] << "\n";
       destination.push_back(s);
     }
 
