@@ -1,15 +1,21 @@
 #include <array>
+#include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <locale>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <algorithm>
 
-const bool _DEBUG = 1;
+#define DEBUG
+
+#ifdef DEBUG
+#define dbgWrite( str ) do { std::cout << str << std::endl; } while(false)
+#else
+#define dbgWrite( str ) do { } while(false)
+#endif // DEBUG
 
 using array2 = std::array<long long, 2>;
 using array3 = std::array<long long, 3>;
@@ -54,6 +60,8 @@ void buildMap(std::ifstream &input,
 void print_vector(std::string message, vector2 vec);
 
 int main (int argc, char *argv[]) {
+  auto start_clock = std::chrono::system_clock::now();
+
   std::ifstream input(argv[1]);
   std::ofstream output(argv[2]);
   std::istringstream ss;
@@ -81,13 +89,13 @@ int main (int argc, char *argv[]) {
   // ------------------------------------------
 
   print_vector("Seeds: ", *almanac[0]);
-  std::cout << '\n' << "Starting map convesions\n";
+  dbgWrite('\n' << "Starting map convesions\n");
 
   std::getline(input, line); // Empty line
 
   // Converts using all the maps except location
   for(int i = 1; i < 7; i++){
-    std::cout << "Converting from " << almanac_names[i-1] << " to " << almanac_names[i] << '\n';
+    dbgWrite("Converting from " << almanac_names[i-1] << " to " << almanac_names[i] << '\n');
 
     *almanac[i] = mapConvert(input, *almanac[i-1]);
 
@@ -95,7 +103,7 @@ int main (int argc, char *argv[]) {
     almanac[i+1] = almanac[i-1];
   }
 
-  std::cout << "Converting to location\n";
+  dbgWrite("Converting to location\n");
 
   *almanac[loc] = mapConvert(input, *almanac[humid]);
 
@@ -107,17 +115,25 @@ int main (int argc, char *argv[]) {
 
   output << result << '\n';
 
+  auto end_clock = std::chrono::system_clock::now();
+  auto time_elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(end_clock - start_clock).count();
+
+
+  std::cout << "\nTime to execute: " << time_elapsed << " nanoseconds\n";
+
   return 0;
 }
 
 void print_vector(std::string message, vector2 vec){
-  std::cout << message;
+  #ifdef DEBUG
+  dbgWrite(message);
 
   for(auto i: vec){
-    std::cout << "[" << i[0] << ", " << i[1] << "] ";
+    dbgWrite("[" << i[0] << ", " << i[1] << "] ");
   }
 
-  std::cout << '\n';
+  dbgWrite("");
+  #endif // DEBUG
 }
 
 vector2 mapConvert(std::ifstream &input, const vector2 &source){
@@ -129,7 +145,7 @@ vector2 mapConvert(std::ifstream &input, const vector2 &source){
   destination = convert(source, source_range, dest_range, range);
 
   print_vector("converted to: ", destination);
-  std::cout << "\n";
+  dbgWrite("");
 
   return destination;
 
@@ -148,7 +164,7 @@ vector2 convert(const vector2 &source, const vector &map_src_start, const vector
   // If they have the same upper bounds, a split may not happen
   // A check for if both are inside the map range needs to be done
   for(auto& [s, source_range]: source){
-    std::cout << "\nNew range from source\n";
+    dbgWrite("\nNew range from source");
 
     p_range_start = s;
     p_range_value = source_range;
@@ -156,12 +172,12 @@ vector2 convert(const vector2 &source, const vector &map_src_start, const vector
 
   NEXT_PARTIAL_RANGE: 
     p_range_end = p_range_start + p_range_value - 1;
-    std::cout << "Range: " << p_range_start << ", " << p_range_end << "\n";
+    dbgWrite("Range: " << p_range_start << ", " << p_range_end);
     // First value larger than s, if none, returns last
     auto bound_str = std::upper_bound(map_src_start.begin(), map_src_start.end(), p_range_start);
     auto bound_end = std::upper_bound(map_src_start.begin(), map_src_start.end(), p_range_end);
 
-    std::cout << "str bound start: " << *bound_str << ", end bound start: " << *bound_end << "\n";
+    dbgWrite("str bound start: " << *bound_str << ", end bound start: " << *bound_end);
 
     auto split = [&](auto range_value, bool inside_map){
       array2 new_split;
@@ -175,19 +191,19 @@ vector2 convert(const vector2 &source, const vector &map_src_start, const vector
         new_split[1] = range_value;
       }
 
-      std::cout << "Split " << inside_map << " range value: " << range_value << "\nFirst range: " << new_split[0] << ", " << new_split[1] << "\n";
+      dbgWrite("Split " << inside_map << " range value: " << range_value << "\nFirst range: " << new_split[0] << ", " << new_split[1]);
 
       p_range_start = p_range_start + range_value;
       p_range_value = p_range_value - range_value;
 
-      std::cout << "Second range: " << p_range_start << ", " << p_range_value << "\n";
+      dbgWrite("Second range: " << p_range_start << ", " << p_range_value);
 
       destination.push_back(new_split);
     };
 
     // Split is guaranteed 
     if(bound_str != bound_end){
-      std::cout << "Different bounds\n";
+      dbgWrite("Different bounds");
       // Out of map before first range
       if(bound_str == map_src_start.begin()){
         split(*map_src_start.begin() - p_range_start, false);
@@ -223,7 +239,7 @@ vector2 convert(const vector2 &source, const vector &map_src_start, const vector
     pos = std::distance(map_src_start.begin(), bound_str);
     offset = p_range_start - *bound_str;
 
-    std::cout << "range start is " << p_range_start << " end of bound is " << *bound_str + map_range[pos]-1 << "\n";
+    dbgWrite("range start is " << p_range_start << " end of bound is " << *bound_str + map_range[pos]-1);
     // Start is inside map
     if(p_range_start < *bound_str + map_range[pos]-1){
       // Both inside
@@ -269,14 +285,14 @@ void buildMap(std::ifstream &input, vector &source_range, vector &dest_range, ve
   auto sortSDR = [](array3 va, array3 vb) { return (va[1] < vb[1]); };
 
   std::sort(SDR.begin(), SDR.end(), sortSDR);
-  std::cout << "sorted map: S R D\n";
+  dbgWrite("sorted map: S R D");
 
   for(array3 num: SDR){
-    std::cout << num[1] << " " << num[2] << " " << num[0] << "\n";
+    dbgWrite(num[1] << " " << num[2] << " " << num[0] );
     source_range.push_back(num[1]);
     range.push_back(num[2]);
     dest_range.push_back(num[0]);
   }
 
-  std::cout << "\n";
+  dbgWrite("");
 }
