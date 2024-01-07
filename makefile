@@ -1,4 +1,4 @@
-CPPFLAGS = -Wall -Werror -O2
+CPPFLAGS = -std=c++20 -Wall -Werror -O2
 
 build:
 	$(CXX) $(CPPFLAGS) -o run "Day $$day/code.cpp"
