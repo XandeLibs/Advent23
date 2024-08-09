@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "MIMode": "gdb",
+      "request": "launch",
+      "args": ["${relativeFileDirname}/test.txt", "${workspaceFolder}/test_result.txt"],
+      "cwd": "/home/xande/Projects/Advent23",
+      "program": "/home/xande/Projects/Advent23/run",
+      "preLaunchTask": "Make",
+      "stopAtEntry": true
+    }
+  ]
+}
