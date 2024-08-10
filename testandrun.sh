@@ -3,20 +3,20 @@
 echo -n "Choose day: "
 read day
 
-make build day=$day
+make build day=Day-$day
 
 if [ $? == 0 ]; then
 
   echo "Running test"
-  ./run "Day $day/test.txt" "test_result.txt"
+  ./run "Day-$day/test.txt" "test_result.txt"
 
   echo "Testing difference"
-  DIFF=$(diff --strip-trailing-cr "Day $day/test_answer.txt" "test_result.txt")
+  DIFF=$(diff --strip-trailing-cr "Day-$day/test_answer.txt" "test_result.txt")
   echo $DIFF
 
   if ! [ "$DIFF" != "" ]; then
     echo "Running input"
-    ./run "Day $day/input.txt" "result.txt"
+    ./run "Day-$day/input.txt" "result.txt"
     cat "result.txt"
   fi
 
