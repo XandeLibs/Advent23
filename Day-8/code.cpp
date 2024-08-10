@@ -28,8 +28,6 @@ vecint getDiffs(vecint &vec) {
     num_prev = num;
   }
 
-  std::cout << num_prev << " last num\n";
-
   last_nums.push_back(num_prev);
 
   return next_line;
@@ -61,8 +59,6 @@ int main(int argc, char *argv[]) {
 
     last_nums.clear();
     sequence.clear();
-
-    std::cout << result << '\n';
 
     ss.clear();
   }
